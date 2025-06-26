@@ -60,8 +60,7 @@ class Query:
         return iter(list(doc_snapshots))
 
     def get(self) -> Iterator[DocumentSnapshot]:
-        warnings.warn('Query.get is deprecated, please use Query.stream',
-                      category=DeprecationWarning)
+        # Stream uses a generator, so we need to convert it to a list for compatibility for .get() method with firestore library
         return list(self.stream())
 
     def _add_field_filter(self, field: str, op: str, value: Any):

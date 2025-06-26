@@ -26,7 +26,7 @@ class CollectionReference:
         return DocumentReference(self._data, new_path, parent=self)
 
     def get(self) -> Iterable[DocumentSnapshot]:
-        # Stream uses a generator, so we need to convert it to a list
+        # Stream uses a generator, so we need to convert it to a list for compatibility for .get() method with firestore library
         return list(self.stream())
     
     @property
@@ -126,7 +126,7 @@ class CollectionGroupReference(CollectionReference):
         return ret
     
     def get(self) -> Iterable[DocumentSnapshot]:
-        # Stream uses a generator, so we need to convert it to a list for compatibility with firestore library
+        # Stream uses a generator, so we need to convert it to a list for compatibility for .get() method with firestore library
         return list(self.stream())
 
     def stream(self, transaction=None) -> Iterable[DocumentSnapshot]:
