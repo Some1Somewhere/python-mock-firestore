@@ -5,12 +5,12 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="mock-firestore",
-    version="0.11.0",
-    author="Matt Dowds",
-    description="In-memory implementation of Google Cloud Firestore for use in tests",
+    version="0.12.0",
+    author="Dhruv Shetty",
+    description="In-memory implementation of Google Cloud Firestore for use in tests with fixes",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/mdowds/mock-firestore",
+    url="https://github.com/Some1Somewhere/python-mock-firestore",
     packages=setuptools.find_packages(),
     test_suite='',
     classifiers=[
