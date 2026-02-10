@@ -4,7 +4,8 @@ import operator
 from typing import List, Dict, Any
 from mockfirestore import NotFound
 from mockfirestore._helpers import (
-    Timestamp, Document, Store, get_by_path, set_by_path, delete_by_path
+    Timestamp, Document, Store, get_by_path, set_by_path, delete_by_path,
+    flatten_for_merge
 )
 from mockfirestore._transformations import apply_transformations
 
@@ -85,7 +86,7 @@ class DocumentReference:
         data['__name__'] = self.id
         if merge:
             try:
-                self.update(data)
+                self.update(flatten_for_merge(data))
             except NotFound:
                 self.set(data)
         else:
