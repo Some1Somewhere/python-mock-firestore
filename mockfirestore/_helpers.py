@@ -77,6 +77,26 @@ class Timestamp:
         return str(self._timestamp).split('.')[1]
 
 
+def flatten_for_merge(data: Dict[str, Any], prefix: str = '') -> Dict[str, Any]:
+    """Flatten nested dicts into dot-notation keys for set(merge=True).
+
+    Firestore's set(merge=True) deep-merges at every nesting level.
+    The mock's update() already handles dot-notation keys correctly,
+    so flattening first lets the existing logic work for nested dicts.
+
+    Only plain dicts are recursed into; Firestore transform objects
+    (Sentinel, ArrayUnion, etc.) are treated as leaf values.
+    """
+    result: Dict[str, Any] = {}
+    for key, value in data.items():
+        full_key = '{}.{}'.format(prefix, key) if prefix else key
+        if isinstance(value, dict) and value:
+            result.update(flatten_for_merge(value, prefix=full_key))
+        else:
+            result[full_key] = value
+    return result
+
+
 def get_document_iterator(document: Dict[str, Any], prefix: str = '') -> Iterator[Tuple[str, Any]]:
     """
     :returns: (dot-delimited path, value,)
