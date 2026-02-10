@@ -68,7 +68,10 @@ def _apply_updates(document: Dict[str, Any], data: Dict[str, Any]):
 def _apply_deletes(document: Dict[str, Any], data: List[str]):
     for key in data:
         path = key.split(".")
-        delete_by_path(document, path)
+        try:
+            delete_by_path(document, path)
+        except KeyError:
+            continue
 
 
 def _apply_arr_deletes(document: Dict[str, Any], data: Dict[str, Any]):
