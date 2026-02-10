@@ -317,6 +317,39 @@ class TestDocumentReference(TestCase):
         doc = fs.collection("foo").document("first").get().to_dict()
         self.assertEqual(doc, {})
 
+    def test_document_update_transformerSentinelNonExistentField(self):
+        fs = MockFirestore()
+        fs._data = {'foo': {
+            'first': {'spicy': 'tuna'}
+        }}
+        fs.collection('foo').document('first').update({"nonexistent": firestore.DELETE_FIELD})
+
+        doc = fs.collection("foo").document("first").get().to_dict()
+        self.assertEqual(doc, {'spicy': 'tuna'})
+
+    def test_document_update_transformerSentinelNonExistentNestedField(self):
+        fs = MockFirestore()
+        fs._data = {'foo': {
+            'first': {'spicy': 'tuna'}
+        }}
+        fs.collection('foo').document('first').update({"stats.student123.field": firestore.DELETE_FIELD})
+
+        doc = fs.collection("foo").document("first").get().to_dict()
+        self.assertEqual(doc, {'spicy': 'tuna'})
+
+    def test_document_update_transformerSentinelMixedExistingAndNonExistent(self):
+        fs = MockFirestore()
+        fs._data = {'foo': {
+            'first': {'spicy': 'tuna', 'remove_me': 'gone'}
+        }}
+        fs.collection('foo').document('first').update({
+            "remove_me": firestore.DELETE_FIELD,
+            "nonexistent": firestore.DELETE_FIELD,
+        })
+
+        doc = fs.collection("foo").document("first").get().to_dict()
+        self.assertEqual(doc, {'spicy': 'tuna'})
+
     def test_document_update_transformerArrayRemoveBasic(self):
         fs = MockFirestore()
         fs._data = {"foo": {"first": {"arr": [1, 2, 3, 4]}}}
