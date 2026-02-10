@@ -90,7 +90,7 @@ def flatten_for_merge(data: Dict[str, Any], prefix: str = '') -> Dict[str, Any]:
     result: Dict[str, Any] = {}
     for key, value in data.items():
         full_key = '{}.{}'.format(prefix, key) if prefix else key
-        if isinstance(value, dict):
+        if isinstance(value, dict) and value:
             result.update(flatten_for_merge(value, prefix=full_key))
         else:
             result[full_key] = value
