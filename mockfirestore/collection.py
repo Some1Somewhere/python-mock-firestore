@@ -26,9 +26,8 @@ class CollectionReference:
         return DocumentReference(self._data, new_path, parent=self)
 
     def get(self) -> Iterable[DocumentSnapshot]:
-        warnings.warn('Collection.get is deprecated, please use Collection.stream',
-                      category=DeprecationWarning)
-        return self.stream()
+        # Stream uses a generator, so we need to convert it to a list for compatibility for .get() method with firestore library
+        return list(self.stream())
     
     @property
     def path(self):
@@ -127,9 +126,8 @@ class CollectionGroupReference(CollectionReference):
         return ret
     
     def get(self) -> Iterable[DocumentSnapshot]:
-        warnings.warn('Collection.get is deprecated, please use Collection.stream',
-                      category=DeprecationWarning)
-        return self.stream()
+        # Stream uses a generator, so we need to convert it to a list for compatibility for .get() method with firestore library
+        return list(self.stream())
 
     def stream(self, transaction=None) -> Iterable[DocumentSnapshot]:
         for path in self._path:

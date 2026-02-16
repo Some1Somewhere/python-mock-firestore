@@ -57,12 +57,11 @@ class Query:
         if self._limit:
             doc_snapshots = islice(doc_snapshots, self._limit)
 
-        return iter(doc_snapshots)
+        return iter(list(doc_snapshots))
 
     def get(self) -> Iterator[DocumentSnapshot]:
-        warnings.warn('Query.get is deprecated, please use Query.stream',
-                      category=DeprecationWarning)
-        return self.stream()
+        # Stream uses a generator, so we need to convert it to a list for compatibility for .get() method with firestore library
+        return list(self.stream())
 
     def _add_field_filter(self, field: str, op: str, value: Any):
         compare = self._compare_func(op)
