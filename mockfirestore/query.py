@@ -1,5 +1,6 @@
 import warnings
 from itertools import islice, tee
+from types import SimpleNamespace
 from typing import Iterator, Any, Optional, List, Callable, Union
 from google.cloud.firestore_v1.base_query import FieldFilter
 from mockfirestore.document import DocumentSnapshot
@@ -63,6 +64,13 @@ class Query:
         warnings.warn('Query.get is deprecated, please use Query.stream',
                       category=DeprecationWarning)
         return list(self.stream())
+
+    def count(self, alias=None) -> AggregationQuery:
+        # Reuses self.stream() (-> _process_snapshots) so all field filters,
+        # including 'in', are honored - matching real Firestore's filtered
+        # aggregation, unlike CollectionReference.count()'s unfiltered stub.
+        count = len(list(self.stream()))
+        return AggregationQuery([[SimpleNamespace(value=count)]])
 
     def _add_field_filter(self, field: str, op: str, value: Any):
         compare = self._compare_func(op)
