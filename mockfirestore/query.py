@@ -34,7 +34,9 @@ class Query:
 
     def stream(self, transaction=None) -> Iterator[DocumentSnapshot]:
         doc_snapshots = self.parent.stream()
+        return iter(self._process_snapshots(doc_snapshots))
 
+    def _process_snapshots(self, doc_snapshots) -> List[DocumentSnapshot]:
         for field, compare, value in self._field_filters:
             doc_snapshots = [doc_snapshot for doc_snapshot in doc_snapshots
                              if compare(doc_snapshot._get_by_field_path(field), value)]
@@ -58,7 +60,7 @@ class Query:
         if self._limit:
             doc_snapshots = islice(doc_snapshots, self._limit)
 
-        return iter(list(doc_snapshots))
+        return list(doc_snapshots)
 
     def get(self) -> Iterator[DocumentSnapshot]:
         warnings.warn('Query.get is deprecated, please use Query.stream',

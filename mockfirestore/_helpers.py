@@ -3,7 +3,7 @@ import random
 import string
 from datetime import datetime as dt
 from functools import reduce
-from typing import (Dict, Any, Tuple, TypeVar, Sequence, Iterator)
+from typing import (Dict, Any, Tuple, TypeVar, Sequence, Iterator, AsyncIterable, List)
 
 T = TypeVar('T')
 KeyValuePair = Tuple[str, Dict[str, Any]]
@@ -95,6 +95,10 @@ def flatten_for_merge(data: Dict[str, Any], prefix: str = '') -> Dict[str, Any]:
         else:
             result[full_key] = value
     return result
+
+
+async def consume_async_iterable(iterable: AsyncIterable[T]) -> List[T]:
+    return [item async for item in iterable]
 
 
 def get_document_iterator(document: Dict[str, Any], prefix: str = '') -> Iterator[Tuple[str, Any]]:
